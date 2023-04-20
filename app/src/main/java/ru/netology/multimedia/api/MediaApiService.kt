@@ -5,7 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import ru.netology.multimedia.MainActivity.Companion.BASE_URL
+import ru.netology.multimedia.MainFragment.Companion.BASE_URL
 import ru.netology.multimedia.dto.Media
 
 private val logging = HttpLoggingInterceptor().apply {
@@ -25,7 +25,6 @@ private val retrofit = Retrofit.Builder()
 interface MediaApiService {
     @GET("album.json")
     suspend fun getMedia(): Media
-
 }
 
 object MediaApi {
