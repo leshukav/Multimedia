@@ -27,7 +27,8 @@ class MainFragment : Fragment() {
             "https://github.com/netology-code/andad-homeworks/raw/master/09_multimedia/data/"
         val observer = MediaLifecycleObserver()
     }
-    private var currentPlayTrack = -1L
+    private var currentPlayTrackId = -1L
+    private var nextPosition = 0
     lateinit var binding: FragmentMainBinding
     private lateinit var adapter: MediaAdapter
     private val model: MediaViewModel by activityViewModels()
@@ -45,16 +46,31 @@ class MainFragment : Fragment() {
         adapter = MediaAdapter(object : OnPlayListener {
 
             @SuppressLint("NotifyDataSetChanged")
-            override fun onPlay(track: Track, seekBar: SeekBar) {
-                if (observer.isPaused() == true && track.id == currentPlayTrack) {
-                    observer.mediaPlayer?.start()
+            override fun onPlay(track: Track, seekBar: SeekBar, position: Int) {
+                if (observer.isPaused() == true && track.id == currentPlayTrackId) {
+                   observer.mediaPlayer?.start()
                 } else {
-                    model.currentPlayTrack(track.id)
+                    nextPosition = position
+                    currentPlayTrackId = track.id
+                    model.setStateTracks(track.id)
                     model.playMediaplayer(track, seekBar)
                     binding.mediaList.adapter?.notifyDataSetChanged()
-                    currentPlayTrack = track.id
                 }
 
+                observer.mediaPlayer?.setOnCompletionListener {
+                    nextPosition = if (nextPosition < adapter.itemCount - 1) (nextPosition + 1) else 0
+                    val nextTrack = adapter.currentList[nextPosition]
+                    currentPlayTrackId = nextTrack.id
+                    model.setStateTracks(nextTrack.id)
+                    binding.mediaList.scrollToPosition(nextPosition)
+                    val nextSeek =  binding.mediaList
+                        .findViewHolderForAdapterPosition(nextPosition)?.itemView?.findViewById<SeekBar>(seekBar.id)
+                    nextSeek?.let {
+                            it1 -> model.playMediaplayer(nextTrack, it1)
+                    }
+                    binding.mediaList.adapter?.notifyDataSetChanged()
+
+                }
             }
 
             override fun onPause() {

@@ -36,7 +36,7 @@ class MediaViewModel : ViewModel() {
         }
     }
 
-    fun currentPlayTrack(id: Long) {
+    fun setStateTracks(id: Long) {
         _data.value?.forEach {
             it.playing = it.id == id
             if (it.id != id) it.progress = 0
@@ -44,9 +44,10 @@ class MediaViewModel : ViewModel() {
     }
 
     fun playMediaplayer(track: Track, seekBar: SeekBar) {
+        val url = MainFragment.BASE_URL + track.file
         MainFragment.observer.apply {
             mediaPlayer?.reset()
-            mediaPlayer?.setDataSource("${MainFragment.BASE_URL}${track.file}")
+            mediaPlayer?.setDataSource(url)
         }.onPlay(seekBar)
 
     }

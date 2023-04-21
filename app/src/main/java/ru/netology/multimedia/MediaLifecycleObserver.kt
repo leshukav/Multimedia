@@ -20,13 +20,12 @@ class MediaLifecycleObserver: LifecycleEventObserver {
         mediaPlayer?.setOnPreparedListener{
             it.apply {
                 start()
-               CoroutineScope(Dispatchers.Default).launch {
-                   initSeekBar(seekBar)
-               }
+                CoroutineScope(Dispatchers.Default).launch {
+                    initSeekBar(seekBar)
+                }
  /*               setOnCompletionListener {
                     it.isLooping = true
-                }
-  */
+                }   */
             }
         }
         mediaPlayer?.prepareAsync()

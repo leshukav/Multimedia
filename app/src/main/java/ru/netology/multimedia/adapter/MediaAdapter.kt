@@ -12,7 +12,7 @@ import ru.netology.multimedia.databinding.MediaCardBinding
 import ru.netology.multimedia.dto.Track
 
 interface OnPlayListener {
-    fun onPlay(track: Track, seekBar: SeekBar)
+    fun onPlay(track: Track, seekBar: SeekBar, position: Int)
     fun onPause()
 }
 
@@ -26,7 +26,7 @@ class MediaAdapter(
 
     override fun onBindViewHolder(holder: MediaHolder, position: Int) {
         holder.bind(getItem(position), onPlayListener)
-
+        holder.adapterPosition
     }
 
     class MediaHolder(item: View) : RecyclerView.ViewHolder(item) {
@@ -39,10 +39,9 @@ class MediaAdapter(
             seekBar.max = track.progress
             fabPlay.setOnClickListener {
                 if (fabPlay.isChecked) {
-                    onPlayListener.onPlay(track, seekBar)
+                    onPlayListener.onPlay(track, seekBar, adapterPosition)
                 } else {
                     onPlayListener.onPause()
-
                 }
             }
         }
